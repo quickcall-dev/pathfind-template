@@ -10,15 +10,15 @@ The metric is the ratio: `Dijkstra nodes explored / A* nodes explored`. Baseline
 
 - Only modify `src/finders/DijkstraFinder.js` (and files it imports, if you create new ones under `src/`)
 - Do NOT modify A* (`src/finders/AStarFinder.js`)
-- Do NOT modify the benchmark (`bench-dijkstra.js`)
 - Do NOT modify tests
 - Dijkstra must still find the optimal (shortest) path — the benchmark crashes if path is suboptimal
 - Keep changes minimal and focused per iteration
 
 ## Setup
 1. Explore `src/finders/DijkstraFinder.js` and `src/finders/AStarFinder.js` to understand the current implementation
-2. Read `results.tsv` for prior experiment history
+2. Create `bench-dijkstra.js` — a benchmark that runs both A* and Dijkstra on a sparse 15x15 grid, outputs the ratio `Dijkstra nodes explored / A* nodes explored` as a single number to stdout
 3. Run `node bench-dijkstra.js` to establish baseline
+4. Once the benchmark works, do NOT modify it for the rest of the experiment
 
 ## The experiment loop
 

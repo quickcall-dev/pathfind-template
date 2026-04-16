@@ -14,7 +14,7 @@ created: "2026-04-16 13:27 UTC"
   - **fleet-02-scenario-builder** (iterative, 6 workers) — build scenario builder with reviewer loop
   - **fleet-03-algorithm-race** (dag, 3 workers) — A* vs Dijkstra benchmark + leaderboard
   - **fleet-04-dijkstra-optimize** (autoresearch) — autonomous Dijkstra optimization loop
-- `bench-dijkstra.js` at repo root for fleet-04 eval
+- fleet-04 creates its own `bench-dijkstra.js` during setup phase
 
 ## Next
 

@@ -69,7 +69,6 @@ npx skills add quickcall-dev/skills
 │   └── finders/          # A*, Dijkstra, BFS, JumpPoint, etc.
 ├── test/                 # mocha test suite
 ├── visual/               # browser demo app
-├── bench-dijkstra.js     # benchmark for fleet-04
 ├── dev.sh                # tmux dev environment launcher
 ├── docs/                 # /doc skill structure (experiments, learnings, etc.)
 └── docs/                 # /doc skill structure
