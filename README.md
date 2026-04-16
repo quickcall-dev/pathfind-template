@@ -37,6 +37,8 @@ Four ready-to-launch fleets in `fleets/`:
 npx skills add quickcall-dev/skills
 ```
 
+When prompted: select all skills → **Claude Code** only → **Project** scope → **Symlink**.
+
 ### Launch a fleet
 
 ```bash
