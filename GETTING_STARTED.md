@@ -180,6 +180,41 @@ graph TD
     end
 ```
 
+## Documentation skill (`/doc`)
+
+This repo comes with a pre-initialized `docs/` structure managed by the `/doc` skill. As you run fleets and experiments, use `/doc` to track plans, findings, checkpoints, and learnings — all organized under numbered experiments.
+
+```
+docs/
+├── architecture/                    # system design docs
+├── guides/                          # how-to guides
+├── learnings/                       # distilled insights by domain
+├── research/                        # standalone research notes
+└── experiments/
+    └── 001-demo-artifacts/          # pre-created for fleet demos
+        ├── .meta.json               # auto-managed metadata
+        ├── plans/                   # numbered plans (01, 02, ...)
+        ├── findings/                # discoveries during work
+        ├── checkpoints/             # progress snapshots
+        ├── research/                # experiment-scoped research
+        └── review/                  # structured reviews
+```
+
+### Quick reference
+
+```bash
+# Inside Claude Code:
+/doc plan 1 "test-strategy"         # create a plan for experiment 1
+/doc ckpt 1 "tests-passing"         # checkpoint current progress
+/doc finding 1 "perf-regression"    # record a finding
+/doc learn 1 "testing" "mock-pitfalls"  # save a reusable learning
+/doc status 1                       # show experiment state
+/doc list                           # list all experiments
+/doc resume 1                       # pick up where you left off
+```
+
+The `/doc` skill is stateless and parallel-safe — multiple fleet workers can write to the same experiment without conflicts. Each command creates a new numbered file; nothing is overwritten.
+
 ## Recommended order for first-time users
 
 1. **fleet-03** (algorithm-race) — simplest, 3 workers, finishes fast

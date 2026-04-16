@@ -70,6 +70,8 @@ npx skills add quickcall-dev/skills
 ├── test/                 # mocha test suite
 ├── visual/               # browser demo app
 ├── bench-dijkstra.js     # benchmark for fleet-04
+├── dev.sh                # tmux dev environment launcher
+├── docs/                 # /doc skill structure (experiments, learnings, etc.)
 └── fleets/               # fleet definitions (ready to launch)
     ├── fleet-01-test-blitz/
     ├── fleet-02-scenario-builder/
