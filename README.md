@@ -41,16 +41,16 @@ npx skills add quickcall-dev/skills
 
 ```bash
 # DAG fleet (one-shot parallel workers)
-/dag-fleet launch fleets/fleet-01-test-blitz
+/dag-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-01-test-blitz
 
 # Iterative fleet (reviewer-gated cycles)
-/iterative-fleet launch fleets/fleet-02-scenario-builder
+/iterative-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-02-scenario-builder
 
 # DAG fleet
-/dag-fleet launch fleets/fleet-03-algorithm-race
+/dag-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-03-algorithm-race
 
 # Autoresearch fleet (autonomous research loop)
-/autoresearch-fleet launch fleets/fleet-04-dijkstra-optimize
+/autoresearch-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-04-dijkstra-optimize
 ```
 
 ### Monitor
@@ -72,11 +72,14 @@ npx skills add quickcall-dev/skills
 ├── bench-dijkstra.js     # benchmark for fleet-04
 ├── dev.sh                # tmux dev environment launcher
 ├── docs/                 # /doc skill structure (experiments, learnings, etc.)
-└── fleets/               # fleet definitions (ready to launch)
-    ├── fleet-01-test-blitz/
-    ├── fleet-02-scenario-builder/
-    ├── fleet-03-algorithm-race/
-    └── fleet-04-dijkstra-optimize/
+└── docs/                 # /doc skill structure
+    └── experiments/
+        └── 001-demo-artifacts/
+            └── fleets/   # fleet definitions (ready to launch)
+                ├── fleet-01-test-blitz/
+                ├── fleet-02-scenario-builder/
+                ├── fleet-03-algorithm-race/
+                └── fleet-04-dijkstra-optimize/
 ```
 
 ## Original Library

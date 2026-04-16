@@ -105,16 +105,16 @@ Then pick a fleet:
 
 ```
 # Easiest — 3 workers, fast
-/dag-fleet launch fleets/fleet-03-algorithm-race
+/dag-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-03-algorithm-race
 
 # Medium — 9 workers, DAG dependencies
-/dag-fleet launch fleets/fleet-01-test-blitz
+/dag-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-01-test-blitz
 
 # Advanced — iterative with reviewer loop
-/iterative-fleet launch fleets/fleet-02-scenario-builder
+/iterative-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-02-scenario-builder
 
 # Autonomous — runs until stopped or budget exhausted
-/autoresearch-fleet launch fleets/fleet-04-dijkstra-optimize
+/autoresearch-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-04-dijkstra-optimize
 ```
 
 ## Monitor a running fleet
