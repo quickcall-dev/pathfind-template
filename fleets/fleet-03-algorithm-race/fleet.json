@@ -1,0 +1,36 @@
+{
+  "fleet_name": "fleet-03-algorithm-race",
+  "type": "dag",
+  "config": {
+    "max_concurrent": 3,
+    "model": "sonnet",
+    "fallback_model": "sonnet",
+    "provider": "claude"
+  },
+  "workers": [
+    {
+      "id": "racer-astar",
+      "model": "sonnet",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": []
+    },
+    {
+      "id": "racer-dijkstra",
+      "model": "sonnet",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": []
+    },
+    {
+      "id": "leaderboard",
+      "model": "opus",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "racer-astar",
+        "racer-dijkstra"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "fleet_name": "fleet-04-dijkstra-optimize",
+  "type": "autoresearch",
+  "config": {
+    "model": "sonnet",
+    "fallback_model": "sonnet",
+    "provider": "claude",
+    "budget_per_iter": 5,
+    "max_turns": 0
+  },
+  "problem": {
+    "workdir": ".",
+    "eval_command": "node bench-dijkstra.js",
+    "metric_regex": "^([0-9.]+)$",
+    "metric_direction": "minimize",
+    "results_file": "results.tsv",
+    "program_md": "program.md"
+  },
+  "stop_when": {
+    "max_iterations": 20,
+    "cost_cap_usd": 50
+  },
+  "search": {
+    "enabled": true,
+    "plateau_threshold": 3
+  }
+}

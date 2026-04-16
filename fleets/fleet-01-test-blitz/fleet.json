@@ -1,0 +1,94 @@
+{
+  "fleet_name": "fleet-01-test-blitz",
+  "type": "dag",
+  "config": {
+    "max_concurrent": 4,
+    "model": "sonnet",
+    "fallback_model": "sonnet",
+    "provider": "claude"
+  },
+  "workers": [
+    {
+      "id": "coverage-auditor",
+      "model": "sonnet",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": []
+    },
+    {
+      "id": "visual-auditor",
+      "model": "sonnet",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": []
+    },
+    {
+      "id": "orchestrator",
+      "model": "opus",
+      "type": "write",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "coverage-auditor",
+        "visual-auditor"
+      ]
+    },
+    {
+      "id": "test-writer-1",
+      "model": "sonnet",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "test-writer-2",
+      "model": "sonnet",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "test-writer-3",
+      "model": "sonnet",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "test-writer-4",
+      "model": "sonnet",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "scenario-builder",
+      "model": "opus",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "validator",
+      "model": "opus",
+      "type": "code-run",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "test-writer-1",
+        "test-writer-2",
+        "test-writer-3",
+        "test-writer-4",
+        "scenario-builder"
+      ]
+    }
+  ]
+}
