@@ -4,52 +4,25 @@ experiment: 001-demo-artifacts
 created: "2026-04-16 13:27 UTC"
 ---
 
-```mermaid
-graph LR
-    A[Clone repo] --> B[npm install]
-    B --> C[./dev.sh]
-    C --> D[Start Claude Code]
-    D --> E[Launch fleet]
-    E --> F[Monitor + iterate]
-```
-
 ## What
 
-- 4 fleet definitions ready to launch, inside `docs/experiments/001-demo-artifacts/fleets/`
-- All runtime state stripped (no status, session_name, timestamps)
-- Absolute paths replaced with relative paths in all prompt.md files
-- Dev environment via `./dev.sh` (tmux: server + tests)
-- `/doc` skill scaffold pre-initialized
-
-## Fleet launch commands
-
-```bash
-# Start simple — 3 workers, fast finish
-/dag-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-03-algorithm-race
-
-# 9-worker DAG with dependency chain
-/dag-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-01-test-blitz
-
-# Iterative with reviewer loop
-/iterative-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-02-scenario-builder
-
-# Autonomous research — runs until killed
-/autoresearch-fleet launch docs/experiments/001-demo-artifacts/fleets/fleet-04-dijkstra-optimize
-```
-
-## Issues
-
-- None. All definitions validated against original successful runs.
-
-## Decisions
-
-- Fleets live inside experiment dir, not repo root — shows `/doc` skill structure
-- Recommended order: fleet-03 → fleet-01 → fleet-02 → fleet-04 (simple to complex)
-- `bench-dijkstra.js` lives at repo root (fleet-04 eval command expects it there)
+- Forked from [qiao/PathFinding.js](https://github.com/qiao/PathFinding.js) at `2904a9a`, patched `should.js` for Node 25
+- `./dev.sh` starts tmux with visual demo server (port 8080) + test runner
+- `/doc` scaffold initialized with this experiment
+- 4 fleet definitions in `docs/experiments/001-demo-artifacts/fleets/`:
+  - **fleet-01-test-blitz** (dag, 9 workers) — coverage audit → test writing → validation
+  - **fleet-02-scenario-builder** (iterative, 6 workers) — build scenario builder with reviewer loop
+  - **fleet-03-algorithm-race** (dag, 3 workers) — A* vs Dijkstra benchmark + leaderboard
+  - **fleet-04-dijkstra-optimize** (autoresearch) — autonomous Dijkstra optimization loop
+- `bench-dijkstra.js` at repo root for fleet-04 eval
 
 ## Next
 
-1. Launch fleet-03 (algorithm-race) as smoke test
-2. Verify workers spawn, run, and complete
-3. Check outputs land in correct worker dirs
-4. Create checkpoint 02 after first successful fleet run
+Run fleets one by one, simplest first:
+
+1. `/dag-fleet launch` fleet-03-algorithm-race
+2. `/dag-fleet launch` fleet-01-test-blitz
+3. `/iterative-fleet launch` fleet-02-scenario-builder
+4. `/autoresearch-fleet launch` fleet-04-dijkstra-optimize
+
+Start `./dev.sh` before launching. Checkpoint after each fleet completes.
