@@ -2,6 +2,8 @@
 
 Pre-configured repo for running [skills fleet demos](https://github.com/quickcall-dev/skills) against a real JavaScript codebase.
 
+**New here? Read [GETTING_STARTED.md](GETTING_STARTED.md) for the full setup guide.**
+
 ## Provenance
 
 - **Upstream**: [qiao/PathFinding.js](https://github.com/qiao/PathFinding.js) — comprehensive pathfinding library for grid-based games
