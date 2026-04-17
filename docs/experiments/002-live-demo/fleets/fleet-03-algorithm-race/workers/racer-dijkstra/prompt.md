@@ -21,9 +21,7 @@ Benchmark Dijkstra pathfinding on two maps and capture metrics.
 
 ## Output
 
-Save ALL output files to `/home/sagar/template-repo/docs/experiments/002-live-demo/fleets/fleet-03-algorithm-race/workers/racer-dijkstra/output/` — use absolute paths.
-
-Primary deliverable: `/home/sagar/template-repo/docs/experiments/002-live-demo/fleets/fleet-03-algorithm-race/workers/racer-dijkstra/output/results.md`
+Save results to `workers/racer-dijkstra/output/results.md` (relative to fleet root).
 
 Include both maps' results clearly labeled.
 
