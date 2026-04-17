@@ -2,6 +2,8 @@
 
 Pre-configured repo for running [skills fleet demos](https://github.com/quickcall-dev/skills) against a real JavaScript codebase.
 
+**Slides**: https://def1-20-124-190-109.ngrok-free.app/ *(temporary ngrok link)*
+
 ## Provenance
 
 - **Upstream**: [qiao/PathFinding.js](https://github.com/qiao/PathFinding.js) — comprehensive pathfinding library for grid-based games
