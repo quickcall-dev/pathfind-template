@@ -181,10 +181,9 @@ DijkstraFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
     }
 
     var openList = new Heap(function(a, b) {
-        var diff = a.g - b.g;
-        if (diff !== 0) return diff;
-        return (Math.abs(a.x - endX) + Math.abs(a.y - endY)) -
-               (Math.abs(b.x - endX) + Math.abs(b.y - endY));
+        var fa = a.g + Math.abs(a.x - endX) + Math.abs(a.y - endY);
+        var fb = b.g + Math.abs(b.x - endX) + Math.abs(b.y - endY);
+        return fa - fb;
     });
     var startNode = grid.getNodeAt(startX, startY);
     var endNode = grid.getNodeAt(endX, endY);
