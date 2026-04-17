@@ -172,6 +172,28 @@ function reconstructPath(endNode) {
 
 var DiagonalMovement = require('../core/DiagonalMovement');
 
+// BFS from goal to compute exact shortest distance from every cell to goal.
+function computeReverseDistances(endX, endY, grid) {
+    var w = grid.width, h = grid.height;
+    var dist = [], i, j;
+    for (i = 0; i < w; i++) { dist[i] = []; for (j = 0; j < h; j++) dist[i][j] = Infinity; }
+    dist[endX][endY] = 0;
+    var queue = [endX, endY, 0];
+    var head = 0;
+    var dirs = [1,0,-1,0,0,1,0,-1];
+    while (head < queue.length) {
+        var cx = queue[head++], cy = queue[head++], cd = queue[head++];
+        for (var k = 0; k < 8; k += 2) {
+            var nx = cx + dirs[k], ny = cy + dirs[k+1];
+            if (nx >= 0 && nx < w && ny >= 0 && ny < h && grid.isWalkableAt(nx, ny) && dist[nx][ny] === Infinity) {
+                dist[nx][ny] = cd + 1;
+                queue.push(nx, ny, cd + 1);
+            }
+        }
+    }
+    return dist;
+}
+
 // JPS-based Dijkstra for cardinal-only movement; falls back to standard
 // Dijkstra (A* with h=0) for diagonal movement modes.
 DijkstraFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
@@ -180,9 +202,10 @@ DijkstraFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
         return AStarFinder.prototype.findPath.call(this, startX, startY, endX, endY, grid);
     }
 
+    var dist = computeReverseDistances(endX, endY, grid);
     var openList = new Heap(function(a, b) {
-        var fa = a.g + Math.abs(a.x - endX) + Math.abs(a.y - endY);
-        var fb = b.g + Math.abs(b.x - endX) + Math.abs(b.y - endY);
+        var fa = a.g + dist[a.x][a.y];
+        var fb = b.g + dist[b.x][b.y];
         return fa - fb;
     });
     var startNode = grid.getNodeAt(startX, startY);
