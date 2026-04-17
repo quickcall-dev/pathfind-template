@@ -206,7 +206,8 @@ DijkstraFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
     var openList = new Heap(function(a, b) {
         var fa = a.g + dist[a.x][a.y];
         var fb = b.g + dist[b.x][b.y];
-        return fa - fb;
+        if (fa !== fb) return fa - fb;
+        return dist[a.x][a.y] - dist[b.x][b.y];
     });
     var startNode = grid.getNodeAt(startX, startY);
     var endNode = grid.getNodeAt(endX, endY);
