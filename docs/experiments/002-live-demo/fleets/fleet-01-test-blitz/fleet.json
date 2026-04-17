@@ -1,0 +1,104 @@
+{
+  "fleet_name": "fleet-01-test-blitz",
+  "fleet_id": "fleet-01-test-blitz-002",
+  "config": {
+    "max_concurrent": 4,
+    "model": "sonnet",
+    "fallback_model": "haiku",
+    "launch_delay_seconds": 3
+  },
+  "workers": [
+    {
+      "id": "coverage-auditor",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Audit test coverage gaps across all pathfinding algorithms",
+      "max_budget_usd": 10,
+      "depends_on": []
+    },
+    {
+      "id": "visual-auditor",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Audit visual demo app for missing features and gaps",
+      "max_budget_usd": 10,
+      "depends_on": []
+    },
+    {
+      "id": "orchestrator",
+      "model": "opus",
+      "type": "write",
+      "task": "Read audit reports and distribute assignments to test writers",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "coverage-auditor",
+        "visual-auditor"
+      ]
+    },
+    {
+      "id": "test-writer-1",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Write tests for assigned coverage gaps",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "test-writer-2",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Write tests for assigned coverage gaps",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "test-writer-3",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Write tests for assigned coverage gaps",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "test-writer-4",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Write tests for assigned coverage gaps",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "scenario-builder",
+      "model": "opus",
+      "type": "code-run",
+      "task": "Build visual test scenarios for demo app",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "validator",
+      "model": "opus",
+      "type": "code-run",
+      "task": "Validate all test writers output and run full suite",
+      "max_budget_usd": 10,
+      "depends_on": [
+        "test-writer-1",
+        "test-writer-2",
+        "test-writer-3",
+        "test-writer-4",
+        "scenario-builder"
+      ]
+    }
+  ],
+  "killed_at": "2026-04-16T15:39:51Z"
+}

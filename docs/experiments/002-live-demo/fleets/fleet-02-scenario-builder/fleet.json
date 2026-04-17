@@ -1,0 +1,72 @@
+{
+  "fleet_name": "fleet-02-scenario-builder",
+  "fleet_id": "fleet-02-scenario-builder-002",
+  "type": "iterative",
+  "config": {
+    "max_concurrent": 5,
+    "model": "sonnet",
+    "fallback_model": "haiku",
+    "provider": "claude"
+  },
+  "stop_when": {
+    "max_iterations": 5,
+    "reviewer_lgtm_count": 1
+  },
+  "workers": [
+    {
+      "id": "canvas-worker",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Build grid canvas with wall/start/end placement",
+      "max_budget_per_iter": 10,
+      "depends_on": []
+    },
+    {
+      "id": "controls-worker",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Build control panel with algorithm dropdown and buttons",
+      "max_budget_per_iter": 10,
+      "depends_on": []
+    },
+    {
+      "id": "scorer-worker",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Build scoring and comparison system for runs",
+      "max_budget_per_iter": 10,
+      "depends_on": []
+    },
+    {
+      "id": "persistence-worker",
+      "model": "sonnet",
+      "type": "code-run",
+      "task": "Build save/load and preset map functionality",
+      "max_budget_per_iter": 10,
+      "depends_on": []
+    },
+    {
+      "id": "integration-worker",
+      "model": "opus",
+      "type": "code-run",
+      "task": "Wire all components together into working scenario builder",
+      "max_budget_per_iter": 10,
+      "depends_on": []
+    },
+    {
+      "id": "reviewer",
+      "model": "opus",
+      "type": "reviewer",
+      "task": "Review scenario builder completeness and correctness",
+      "max_budget_per_iter": 10,
+      "depends_on": [
+        "canvas-worker",
+        "controls-worker",
+        "scorer-worker",
+        "persistence-worker",
+        "integration-worker"
+      ]
+    }
+  ],
+  "killed_at": "2026-04-16T15:55:57Z"
+}
