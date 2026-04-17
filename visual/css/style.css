@@ -141,3 +141,113 @@ footer {
 .spinner {
     width: 2em;
 }
+
+/* Scorer: score card panel */
+.score-panel {
+    bottom: 20px;
+    left: 20px;
+    width: 220px;
+    padding: 15px;
+}
+
+.score-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.score-action-btn {
+    font-size: 11px;
+    padding: 2px 7px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 3px;
+    color: #fff;
+}
+
+.score-action-btn:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.score-card {
+    margin-bottom: 8px;
+}
+
+.score-card-header {
+    font-weight: bold;
+    font-size: 105%;
+    margin-bottom: 6px;
+    color: #9cf;
+}
+
+.score-card-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 90%;
+}
+
+.score-card-table td {
+    padding: 2px 4px;
+}
+
+.score-card-table td:first-child {
+    color: #aaa;
+}
+
+.score-val {
+    text-align: right;
+    font-family: monospace;
+    font-size: 105%;
+}
+
+/* Scorer: comparison drawer */
+.comparison-drawer {
+    bottom: 20px;
+    left: 260px;
+    max-width: 70vw;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+.drawer-header button {
+    font-size: 11px;
+    padding: 2px 7px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 3px;
+    color: #fff;
+}
+
+.drawer-header button:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.drawer-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.drawer-cards .score-card {
+    min-width: 180px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.drawer-empty {
+    color: #aaa;
+    font-style: italic;
+}

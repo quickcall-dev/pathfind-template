@@ -1,0 +1,49 @@
+{
+  "worker_id": "canvas-worker",
+  "status": "DONE",
+  "task": "Build grid canvas with wall/start/end placement",
+  "iteration": 4,
+  "outputs": [
+    "GridCanvas.js",
+    "GridCanvas.test.js",
+    "canvas.html",
+    "status.json"
+  ],
+  "project_files": [
+    "src/scenario/GridCanvas.js",
+    "test/GridCanvas.test.js"
+  ],
+  "tests": {
+    "file": "test/GridCanvas.test.js",
+    "total": 34,
+    "passing": 34,
+    "failing": 0,
+    "suite_total": 576,
+    "suite_passing": 576,
+    "suite_failing": 0
+  },
+  "changes_iter4": [
+    "Verified all 34 GridCanvas tests still pass",
+    "Verified full suite: 576 passing",
+    "No reviewer feedback to address. No regressions. No changes needed."
+  ],
+  "api": {
+    "module": "src/scenario/GridCanvas.js",
+    "constructor": "new GridCanvas(width=15, height=15)",
+    "methods": [
+      "getCellType(x, y) → 'empty'|'wall'|'start'|'end'",
+      "toggleWall(x, y)",
+      "setWall(x, y)  — direct set, no toggle; useful for drag-paint",
+      "setStart(x, y)",
+      "setEnd(x, y)",
+      "getStart() → {x,y}|null",
+      "getEnd() → {x,y}|null",
+      "getState() → {width, height, start, end, walls}",
+      "setState(snapshot)",
+      "toMatrix() → number[][] (0=walkable, 1=wall)",
+      "reset()",
+      "onChange(fn) — fn(state) fired after every mutation"
+    ]
+  },
+  "last_updated": "2026-04-16T00:00:00Z"
+}

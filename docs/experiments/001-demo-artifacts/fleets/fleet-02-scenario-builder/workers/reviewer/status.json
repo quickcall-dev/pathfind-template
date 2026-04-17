@@ -1,0 +1,7 @@
+{
+  "worker_id": "reviewer",
+  "status": "KILLED",
+  "step": "killed by fleet kill-all",
+  "last_updated": "2026-04-16T15:55:57Z",
+  "cost_usd": 0
+}

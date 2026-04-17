@@ -151,6 +151,9 @@ IDAStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
 
                 // For a typical A* linked list, this would work:
                 // neighbour.parent = node;
+                if (this.trackRecursion && (--neighbour.retainCount) === 0) {
+                    neighbour.tested = false;
+                }
                 return t;
             }
 

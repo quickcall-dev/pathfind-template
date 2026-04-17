@@ -2,20 +2,35 @@
 
 You are auditing test coverage for a JavaScript pathfinding library.
 
+## Environment
+
+Your working directory is the fleet root. Env vars available:
+- `$FLEET_ROOT` — absolute path to fleet root
+- `$WORKER_ID` = `coverage-auditor`
+- `$WORKER_OUTPUT_DIR` = `workers/coverage-auditor/output` (relative to fleet root)
+
+All paths below are **relative to the fleet root** unless stated otherwise.
+
 ## Task
 
-1. Explore the codebase — understand all algorithms in `src/finders/` and all utilities in `src/core/`
-2. Read existing tests in `test/`
-3. Run the test suite: `npx mocha --require should test/**/*.js`
+1. Explore the repo code — `src/finders/` (algorithms) and `src/core/` (utilities). Note: the repo is the parent of `docs/experiments/001-demo-artifacts/fleets/fleet-01-test-blitz` — if you need absolute paths to repo code, use `cd` or treat repo as `../../../../../../` from fleet root.
+2. Read existing tests in `test/` (relative to repo root — navigate there)
+3. Run the test suite from repo root: `npx mocha --require should test/**/*.js`
 4. Produce a gap report: which algorithms, edge cases, and code paths lack test coverage
-5. For each gap, note the file, function/method, and what kind of test is missing
+5. For each gap: note file, function/method, what kind of test is missing
 
 ## Output
 
-Save ALL output to `fleets/fleet-01-test-blitz/workers/coverage-auditor/output/gap-report.md` — use absolute paths.
+Write ONE file — the gap report — to:
 
-Format as markdown with sections per source file. Include:
+```
+workers/coverage-auditor/output/gap-report.md
+```
+
+(Relative to fleet root — which is your working directory.)
+
+Format: markdown with sections per source file. Include:
 - Algorithm name and file path
 - What IS tested
 - What is NOT tested (specific functions, branches, edge cases)
-- Priority (high/medium/low) based on complexity and risk
+- Priority (high/medium/low)

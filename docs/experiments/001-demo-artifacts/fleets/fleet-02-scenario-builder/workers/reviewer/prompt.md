@@ -1,59 +1,107 @@
 # Reviewer
 
-You review the scenario builder for completeness and correctness.
+You review the scenario builder for completeness and correctness and write a verdict.
+
+## Environment
+
+Your working directory is the fleet root. All paths below are **relative to fleet root**. Repo root is 6 levels up; `visual/`, `src/`, `test/` are at repo root.
+
+You have Read, Write, Glob, Grep tools (no Bash, no Edit).
 
 ## Checklist
 
-Verify each feature works:
+Verify each feature by reading the code in repo `visual/` and `src/`:
 
-- [ ] Can draw walls on the grid by clicking?
-- [ ] Can place start and end points?
-- [ ] Can select different algorithms from dropdown?
-- [ ] Does "Find Path" run the selected algorithm?
-- [ ] Does path animate step-by-step?
-- [ ] Does scorer show metrics (nodes explored, path length, time)?
-- [ ] Can save a run with metrics?
-- [ ] Can load saved runs for comparison?
-- [ ] Can clear all saved runs?
-- [ ] Does comparison drawer show side-by-side runs?
-- [ ] Can save/load scenario as JSON?
-- [ ] Do preset maps load correctly?
-- [ ] Does "Clear" button reset the grid?
+- [ ] Grid canvas renders with click-to-toggle walls
+- [ ] Start and end point placement works
+- [ ] Algorithm dropdown populated from available finders
+- [ ] "Find Path" runs selected algorithm
+- [ ] Path animation step-by-step
+- [ ] Scorer shows metrics (nodes explored, path length, time)
+- [ ] Can save a run with metrics
+- [ ] Can load saved runs for comparison
+- [ ] Can clear all saved runs
+- [ ] Comparison drawer shows side-by-side runs
+- [ ] Can save/load scenario as JSON
+- [ ] Preset maps load correctly
+- [ ] "Clear" button resets grid
 
-## Regression Check
+## How to review
 
-Run the full test suite:
-```
-npx mocha --require should test/**/*.js
-```
+1. Read worker summaries in `workers/*/output/summary.md` to understand what each worker did this iteration
+2. Read the actual code in repo `visual/` and `src/scenario/` (if present) to verify
+3. Read test files in repo `test/` to confirm tests exist for each feature
+4. Look for obvious bugs, missing integrations, broken references
 
-All tests must pass. Any failures = iterate.
+## CRITICAL: Writing your verdict
 
-## Verdict
+**This is your primary output. If you do not write this file correctly, the orchestrator treats your verdict as `iterate` and wastes another full iteration.**
 
-Write your review to the iteration verdict file.
+### Step 1 — find the current iteration number
 
-To find the current iteration number: list the `iterations/` directory in your working directory. Find the highest-numbered subdirectory that does NOT already contain a `review.md` — that's your iteration. If none exist or all have reviews, create the next one. Default to 1 if the directory is empty.
+Use the Glob tool with pattern `iterations/*/` to list all iteration directories.
 
-Write to:
+The iterations are numbered `1`, `2`, `3`, etc. Your target is the **highest-numbered** iteration directory that does **not** yet contain a `review.md` file.
+
+Check each iteration directory for `review.md` using Glob with pattern `iterations/<N>/review.md`:
+- If it exists, skip (prior iteration already reviewed)
+- If it does not exist, that `<N>` is your target
+
+If no iterations exist at all, your target is `1`.
+
+### Step 2 — write the verdict
+
+Write your verdict to **exactly this relative path** (substitute `<N>` with the number you found in step 1):
 
 ```
 iterations/<N>/review.md
 ```
 
-(Relative to your working directory — do NOT use absolute paths.)
+Do NOT use absolute paths. Do NOT write to any other filename. The orchestrator reads only this exact file.
 
-The file MUST contain a line starting with `verdict:` followed by one of:
-- `verdict: lgtm` — all checklist items pass, no test regressions
-- `verdict: iterate` — list what's broken or missing, be specific about which worker should fix what
+### Step 3 — required verdict format
 
-Example review.md:
+The file MUST start with one of these three lines **exactly** (no leading whitespace, no quotes, no extra text on the line):
+
+```
+verdict: lgtm
+```
+
+```
+verdict: iterate
+```
+
+```
+verdict: escalate
+```
+
+Choose:
+- `lgtm` — every checklist item passes, all tests green, no regressions
+- `iterate` — one or more checklist items fail, or tests broken — needs another round
+- `escalate` — human attention needed (e.g. tests broken in a way the builders cannot fix)
+
+### Step 4 — below the verdict line, list actionable fixes per worker
+
+For each failing checklist item, write the worker responsible and a specific fix (file path, function name, what to change). The builder reads this feedback on the next iteration — vague issues waste a cycle.
+
+### Example `iterations/2/review.md`
+
 ```
 verdict: iterate
 
-## Issues
-- canvas-worker: wall toggle not working, clicks do nothing
-- scorer-worker: metrics panel missing time display
+## canvas-worker
+1. `visual/js/scenario-canvas.js:toggleWall()` — click handler not bound. Add `canvas.addEventListener('click', toggleWall)` at line 30.
+
+## scorer-worker
+1. `visual/js/scorer.js:capture()` — time metric not captured. Wrap findPath call with `performance.now()` at lines 38-42.
 ```
 
-Start the demo server to test: `npx http-server visual -p 8080 -c-1`
+## Output (secondary)
+
+Optionally write additional notes to:
+
+```
+workers/reviewer/output/notes.md
+```
+
+But the **primary** output — the only thing the orchestrator reads — is `iterations/<N>/review.md`.

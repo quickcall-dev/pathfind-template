@@ -3,34 +3,51 @@
   "type": "dag",
   "config": {
     "max_concurrent": 3,
-    "model": "sonnet",
-    "fallback_model": "sonnet",
-    "provider": "claude"
+    "model": "gpt-5.3-codex",
+    "provider": "codex",
+    "reasoning_effort": "low"
   },
   "workers": [
     {
       "id": "racer-astar",
-      "model": "sonnet",
+      "model": "gpt-5.3-codex",
+      "provider": "codex",
+      "reasoning_effort": "low",
       "type": "code-run",
       "max_budget_usd": 10,
-      "depends_on": []
+      "depends_on": [],
+      "status": "running",
+      "session_name": "fleet-fleet-03-algorithm-race-racer-astar",
+      "started_at": "2026-04-17T05:50:24Z"
     },
     {
       "id": "racer-dijkstra",
-      "model": "sonnet",
+      "model": "gpt-5.3-codex",
+      "provider": "codex",
+      "reasoning_effort": "low",
       "type": "code-run",
       "max_budget_usd": 10,
-      "depends_on": []
+      "depends_on": [],
+      "status": "running",
+      "session_name": "fleet-fleet-03-algorithm-race-racer-dijkstra",
+      "started_at": "2026-04-17T05:50:27Z"
     },
     {
       "id": "leaderboard",
-      "model": "opus",
+      "model": "gpt-5.3-codex",
+      "provider": "codex",
+      "reasoning_effort": "low",
       "type": "code-run",
       "max_budget_usd": 10,
       "depends_on": [
         "racer-astar",
         "racer-dijkstra"
-      ]
+      ],
+      "status": "running",
+      "session_name": "fleet-fleet-03-algorithm-race-leaderboard",
+      "started_at": "2026-04-17T05:52:22Z"
     }
-  ]
+  ],
+  "status": "running",
+  "launched_at": "2026-04-17T05:52:22Z"
 }

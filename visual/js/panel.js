@@ -21,6 +21,25 @@ var Panel = {
         $('#button2').attr('disabled', 'disabled');
     },
     /**
+     * Return a human-readable name for the currently selected finder.
+     */
+    getFinderName: function() {
+        var selected_header = $(
+            '#algorithm_panel .ui-accordion-header[aria-selected=true]'
+        ).attr('id');
+        var nameMap = {
+            'astar_header':          'A*',
+            'breadthfirst_header':   'BreadthFirst',
+            'bestfirst_header':      'BestFirst',
+            'dijkstra_header':       'Dijkstra',
+            'jump_point_header':     'JumpPoint',
+            'orth_jump_point_header':'JumpPoint (Orthogonal)',
+            'ida_header':            'IDA*'
+        };
+        return nameMap[selected_header] || selected_header || 'Unknown';
+    },
+
+    /**
      * Get the user selected path-finder.
      * TODO: clean up this messy code.
      */
@@ -157,7 +176,7 @@ var Panel = {
             trackRecursion = typeof $('#ida_section ' +
                                      '.track_recursion:checked').val() !== 'undefined';
 
-            heuristic = $('input[name=jump_point_heuristic]:checked').val();
+            heuristic = $('input[name=ida_heuristic]:checked').val();
 
             weight = parseInt($('#ida_section input[name=astar_weight]').val()) || 1;
             weight = weight >= 1 ? weight : 1; /* if negative or 0, use 1 */

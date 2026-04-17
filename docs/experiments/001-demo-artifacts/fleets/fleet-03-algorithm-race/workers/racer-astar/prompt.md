@@ -21,7 +21,9 @@ Benchmark A* pathfinding on two maps and capture metrics.
 
 ## Output
 
-Save results to `workers/racer-astar/output/results.md` (relative to fleet root).
+Save ALL output files to `/home/sagar/template-repo/docs/experiments/001-demo-artifacts/fleets/fleet-03-algorithm-race/workers/racer-astar/output/` — use absolute paths.
+
+Primary deliverable: `/home/sagar/template-repo/docs/experiments/001-demo-artifacts/fleets/fleet-03-algorithm-race/workers/racer-astar/output/results.md`
 
 Include both maps' results clearly labeled.
 

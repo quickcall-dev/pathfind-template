@@ -25,6 +25,8 @@
     <script type="text/javascript" src="./js/view.js"></script>
     <script type="text/javascript" src="./js/controller.js"></script>
     <script type="text/javascript" src="./js/panel.js"></script>
+    <script type="text/javascript" src="./js/scorer.js"></script>
+    <script type="text/javascript" src="./js/scenario.js"></script>
     <script type="text/javascript" src="./js/main.js"></script>
   </head>
   <body>
@@ -226,6 +228,51 @@
     </div>
 
     <div id="stats"></div>
+
+    <!-- Score card: shown after each run -->
+    <div id="score_panel" class="panel score-panel" style="display:none;">
+      <div class="score-panel-header">
+        <span class="header_title">Run Results</span>
+        <button id="save_run" class="score-action-btn">Save Run</button>
+        <button id="compare_runs" class="score-action-btn">Compare</button>
+      </div>
+    </div>
+
+    <!-- Comparison drawer: side-by-side saved runs -->
+    <div id="comparison_drawer" class="panel comparison-drawer" style="display:none;"></div>
+
+    <!-- Scenario panel: preset maps, save/load JSON, grid size, speed -->
+    <div id="scenario_panel_ui" class="panel right_panel" style="top:auto;bottom:20px;">
+      <header><h2 class="header_title">Scenarios</h2></header>
+      <div style="padding:8px 10px;">
+        <div style="margin-bottom:8px;">
+          <label style="font-size:11px;display:block;margin-bottom:3px;">Grid Size (cols × rows)</label>
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;">
+            <input type="number" id="grid_cols" value="15" min="5" max="100" style="width:52px;text-align:center;padding:2px 4px;font-size:11px;">
+            <span style="font-size:11px;">×</span>
+            <input type="number" id="grid_rows" value="15" min="5" max="100" style="width:52px;text-align:center;padding:2px 4px;font-size:11px;">
+            <button id="btn_apply_grid_size" class="control_button" style="flex:1;padding:2px 6px;font-size:11px;">Apply</button>
+          </div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:11px;display:block;margin-bottom:3px;">Animation Speed: <span id="speed_val">5</span></label>
+          <input type="range" id="speed_slider" min="1" max="10" value="5" style="width:100%;">
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:11px;display:block;margin-bottom:3px;">Preset Maps</label>
+          <select id="scenario_preset_select" style="width:100%;margin-bottom:4px;">
+            <option value="">— choose preset —</option>
+          </select>
+          <button id="btn_scenario_load_preset" class="control_button" style="width:100%;padding:4px 8px;font-size:11px;">Load Preset</button>
+        </div>
+        <div>
+          <label style="font-size:11px;display:block;margin-bottom:3px;">Scenario File</label>
+          <button id="btn_scenario_save" class="control_button" style="width:100%;padding:4px 8px;font-size:11px;margin-bottom:3px;">Save Scenario</button>
+          <button id="btn_scenario_load" class="control_button" style="width:100%;padding:4px 8px;font-size:11px;">Load Scenario…</button>
+          <input type="file" id="scenario_file_input" accept=".json,application/json" style="display:none;">
+        </div>
+      </div>
+    </div>
 
     <footer>
       Project Hosted on <a href="http://github.com/qiao/PathFinding.js">Github</a>

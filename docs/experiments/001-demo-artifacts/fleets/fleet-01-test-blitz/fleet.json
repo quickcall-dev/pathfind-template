@@ -1,86 +1,120 @@
 {
   "fleet_name": "fleet-01-test-blitz",
-  "type": "dag",
+  "fleet_id": "fleet-01-test-blitz-002",
+  "status": "killed",
   "config": {
     "max_concurrent": 4,
     "model": "sonnet",
-    "fallback_model": "sonnet",
-    "provider": "claude"
+    "fallback_model": "haiku",
+    "launch_delay_seconds": 3
   },
   "workers": [
     {
       "id": "coverage-auditor",
       "model": "sonnet",
       "type": "code-run",
+      "task": "Audit test coverage gaps across all pathfinding algorithms",
       "max_budget_usd": 10,
-      "depends_on": []
+      "depends_on": [],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-coverage-auditor",
+      "started_at": "2026-04-16T14:21:30Z"
     },
     {
       "id": "visual-auditor",
       "model": "sonnet",
       "type": "code-run",
+      "task": "Audit visual demo app for missing features and gaps",
       "max_budget_usd": 10,
-      "depends_on": []
+      "depends_on": [],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-visual-auditor",
+      "started_at": "2026-04-16T14:21:34Z"
     },
     {
       "id": "orchestrator",
       "model": "opus",
       "type": "write",
+      "task": "Read audit reports and distribute assignments to test writers",
       "max_budget_usd": 10,
       "depends_on": [
         "coverage-auditor",
         "visual-auditor"
-      ]
+      ],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-orchestrator",
+      "started_at": "2026-04-16T14:26:09Z"
     },
     {
       "id": "test-writer-1",
       "model": "sonnet",
       "type": "code-run",
+      "task": "Write tests for assigned coverage gaps",
       "max_budget_usd": 10,
       "depends_on": [
         "orchestrator"
-      ]
+      ],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-test-writer-1",
+      "started_at": "2026-04-16T14:30:24Z"
     },
     {
       "id": "test-writer-2",
       "model": "sonnet",
       "type": "code-run",
+      "task": "Write tests for assigned coverage gaps",
       "max_budget_usd": 10,
       "depends_on": [
         "orchestrator"
-      ]
+      ],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-test-writer-2",
+      "started_at": "2026-04-16T14:30:28Z"
     },
     {
       "id": "test-writer-3",
       "model": "sonnet",
       "type": "code-run",
+      "task": "Write tests for assigned coverage gaps",
       "max_budget_usd": 10,
       "depends_on": [
         "orchestrator"
-      ]
+      ],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-test-writer-3",
+      "started_at": "2026-04-16T14:30:32Z"
     },
     {
       "id": "test-writer-4",
       "model": "sonnet",
       "type": "code-run",
+      "task": "Write tests for assigned coverage gaps",
       "max_budget_usd": 10,
       "depends_on": [
         "orchestrator"
-      ]
+      ],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-test-writer-4",
+      "started_at": "2026-04-16T14:30:36Z"
     },
     {
       "id": "scenario-builder",
       "model": "opus",
       "type": "code-run",
+      "task": "Build visual test scenarios for demo app",
       "max_budget_usd": 10,
       "depends_on": [
         "orchestrator"
-      ]
+      ],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-scenario-builder",
+      "started_at": "2026-04-16T14:35:51Z"
     },
     {
       "id": "validator",
       "model": "opus",
       "type": "code-run",
+      "task": "Validate all test writers output and run full suite",
       "max_budget_usd": 10,
       "depends_on": [
         "test-writer-1",
@@ -88,7 +122,12 @@
         "test-writer-3",
         "test-writer-4",
         "scenario-builder"
-      ]
+      ],
+      "status": "running",
+      "session_name": "fleet-fleet-01-test-blitz-validator",
+      "started_at": "2026-04-16T14:39:28Z"
     }
-  ]
+  ],
+  "launched_at": "2026-04-16T14:39:28Z",
+  "killed_at": "2026-04-16T15:39:51Z"
 }

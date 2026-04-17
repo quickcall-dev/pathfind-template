@@ -1,0 +1,498 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scenario Builder — Control Panel</title>
+  <style>
+    /* ── Layout ───────────────────────────────────────────── */
+    body {
+      font-family: sans-serif;
+      font-size: 13px;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+    }
+
+    #draw_area {
+      flex: 1;
+      background: #12122a;
+      position: relative;
+    }
+
+    /* ── Side panel ───────────────────────────────────────── */
+    #scenario_panel {
+      width: 240px;
+      min-width: 240px;
+      background: #16213e;
+      border-left: 1px solid #0f3460;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    #scenario_panel header {
+      background: #0f3460;
+      padding: 12px 14px;
+      font-weight: bold;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      color: #e94560;
+    }
+
+    .section {
+      padding: 10px 14px;
+      border-bottom: 1px solid #0f3460;
+    }
+
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #888;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    /* ── Controls ─────────────────────────────────────────── */
+    select, input[type=number] {
+      width: 100%;
+      background: #0d1b2a;
+      color: #e0e0e0;
+      border: 1px solid #0f3460;
+      border-radius: 3px;
+      padding: 5px 7px;
+      font-size: 12px;
+      box-sizing: border-box;
+    }
+
+    .grid-size-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .grid-size-row input {
+      width: 60px;
+      text-align: center;
+    }
+
+    .grid-size-row span {
+      color: #888;
+    }
+
+    .apply-btn {
+      margin-top: 6px;
+    }
+
+    /* ── Speed slider ─────────────────────────────────────── */
+    .speed-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type=range] {
+      flex: 1;
+      accent-color: #e94560;
+    }
+
+    .speed-val {
+      min-width: 20px;
+      text-align: right;
+      color: #e94560;
+      font-weight: bold;
+    }
+
+    /* ── Buttons ──────────────────────────────────────────── */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 7px 10px;
+      margin-top: 6px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+      transition: opacity 0.15s;
+    }
+
+    .btn:hover:not(:disabled) { opacity: 0.85; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary   { background: #e94560; color: #fff; }
+    .btn-secondary { background: #0f3460; color: #e0e0e0; }
+    .btn-danger    { background: #3a0f1a; color: #e94560; border: 1px solid #e94560; }
+    .btn-success   { background: #0f3a1a; color: #4caf50; border: 1px solid #4caf50; }
+
+    #status_bar {
+      padding: 8px 14px;
+      font-size: 11px;
+      color: #888;
+      border-top: 1px solid #0f3460;
+      margin-top: auto;
+    }
+
+    #status_bar.ok  { color: #4caf50; }
+    #status_bar.err { color: #e94560; }
+
+    /* Hidden file input */
+    #load_file_input { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Grid canvas placeholder (populated by View.js) -->
+  <div id="draw_area"></div>
+
+  <!-- ── Control Panel ──────────────────────────────────── -->
+  <div id="scenario_panel">
+    <header>Scenario Builder</header>
+
+    <!-- Algorithm -->
+    <div class="section">
+      <div class="section-title">Algorithm</div>
+      <select id="algorithm_select"></select>
+    </div>
+
+    <!-- Actions -->
+    <div class="section">
+      <div class="section-title">Actions</div>
+      <button id="btn_find_path" class="btn btn-primary">Find Path</button>
+      <button id="btn_clear"     class="btn btn-danger">Clear Grid</button>
+    </div>
+
+    <!-- Grid Size -->
+    <div class="section">
+      <div class="section-title">Grid Size</div>
+      <div class="grid-size-row">
+        <input type="number" id="grid_cols" value="15" min="5" max="100" title="Columns">
+        <span>×</span>
+        <input type="number" id="grid_rows" value="15" min="5" max="100" title="Rows">
+      </div>
+      <button id="btn_apply_size" class="btn btn-secondary apply-btn">Apply Size</button>
+    </div>
+
+    <!-- Animation Speed -->
+    <div class="section">
+      <div class="section-title">Animation Speed</div>
+      <div class="speed-row">
+        <span>Slow</span>
+        <input type="range" id="speed_slider" min="1" max="10" value="5">
+        <span>Fast</span>
+        <span class="speed-val" id="speed_val">5</span>
+      </div>
+    </div>
+
+    <!-- Preset Maps -->
+    <div class="section">
+      <div class="section-title">Preset Maps</div>
+      <select id="preset_select">
+        <option value="">— choose preset —</option>
+      </select>
+      <button id="btn_load_preset" class="btn btn-secondary" style="margin-top:6px">Load Preset</button>
+    </div>
+
+    <!-- Save / Load -->
+    <div class="section">
+      <div class="section-title">Scenario File</div>
+      <button id="btn_save" class="btn btn-success">Save Scenario</button>
+      <button id="btn_load" class="btn btn-secondary" style="margin-top:4px">Load Scenario…</button>
+      <input type="file" id="load_file_input" accept=".json,application/json">
+    </div>
+
+    <div id="status_bar">Ready.</div>
+  </div>
+
+  <!--
+    ScenarioControls.js provides pure logic (serialize, validate, presets).
+    In production, load it before this script via a bundler or <script> tag.
+    For standalone demo the key objects are inlined below.
+  -->
+  <script>
+  (function() {
+    'use strict';
+
+    /* ── ScenarioControls (inline for standalone use) ──────── */
+    var ScenarioControls = {
+      ALGORITHMS: [
+        { id: 'AStarFinder',                          label: 'A*' },
+        { id: 'BiAStarFinder',                        label: 'A* (Bi-directional)' },
+        { id: 'IDAStarFinder',                        label: 'IDA*' },
+        { id: 'BreadthFirstFinder',                   label: 'Breadth-First Search' },
+        { id: 'BiBreadthFirstFinder',                 label: 'Breadth-First Search (Bi-directional)' },
+        { id: 'BestFirstFinder',                      label: 'Best-First Search' },
+        { id: 'BiBestFirstFinder',                    label: 'Best-First Search (Bi-directional)' },
+        { id: 'DijkstraFinder',                       label: 'Dijkstra' },
+        { id: 'BiDijkstraFinder',                     label: 'Dijkstra (Bi-directional)' },
+        { id: 'JumpPointFinder',                      label: 'Jump Point Search' },
+        { id: 'JPFAlwaysMoveDiagonally',              label: 'JPS (Always Diagonal)' },
+        { id: 'JPFMoveDiagonallyIfAtMostOneObstacle', label: 'JPS (Diagonal ≤1 Obstacle)' },
+        { id: 'JPFMoveDiagonallyIfNoObstacles',       label: 'JPS (No Diagonal Obstacles)' },
+        { id: 'JPFNeverMoveDiagonally',               label: 'JPS (Never Diagonal)' }
+      ],
+
+      PRESETS: {
+        'Empty 15x15': {
+          cols: 15, rows: 15, walls: [],
+          startX: 1, startY: 7, endX: 13, endY: 7
+        },
+        'Maze 15x15': {
+          cols: 15, rows: 15,
+          walls: [
+            [3,1],[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,8],[3,9],
+            [7,5],[7,6],[7,7],[7,8],[7,9],[7,10],[7,11],[7,12],[7,13],
+            [11,1],[11,2],[11,3],[11,4],[11,5],[11,6],[11,7],[11,8],[11,9]
+          ],
+          startX: 1, startY: 7, endX: 13, endY: 7
+        },
+        'Corridors 20x20': {
+          cols: 20, rows: 20,
+          walls: (function() {
+            var w = [];
+            for (var x = 0; x < 20; x++) { if (x !== 5)  w.push([x, 5]); }
+            for (var x = 0; x < 20; x++) { if (x !== 14) w.push([x, 10]); }
+            for (var x = 0; x < 20; x++) { if (x !== 5)  w.push([x, 15]); }
+            return w;
+          }()),
+          startX: 1, startY: 1, endX: 18, endY: 18
+        },
+        'Diagonal Barrier': {
+          cols: 15, rows: 15,
+          walls: (function() {
+            var w = [];
+            for (var i = 2; i <= 12; i++) { w.push([i, i]); }
+            return w;
+          }()),
+          startX: 1, startY: 7, endX: 13, endY: 7
+        }
+      },
+
+      DEFAULT_GRID_SIZE: { cols: 15, rows: 15 },
+
+      validateGridSize: function(cols, rows) {
+        if (typeof cols !== 'number' || typeof rows !== 'number') return false;
+        if (!isFinite(cols) || !isFinite(rows)) return false;
+        if (cols !== Math.floor(cols) || rows !== Math.floor(rows)) return false;
+        return cols >= 5 && cols <= 100 && rows >= 5 && rows <= 100;
+      },
+
+      getAnimationInterval: function(speed) {
+        var s = Math.min(10, Math.max(1, speed));
+        return Math.round(500 * Math.pow(10 / 500, (s - 1) / 9));
+      },
+
+      serializeScenario: function(opts) {
+        return JSON.stringify({
+          cols: opts.cols, rows: opts.rows, walls: opts.walls,
+          startX: opts.startX, startY: opts.startY,
+          endX: opts.endX, endY: opts.endY,
+          algorithm: opts.algorithm
+        }, null, 2);
+      },
+
+      deserializeScenario: function(input) {
+        var REQUIRED = ['cols','rows','walls','startX','startY','endX','endY','algorithm'];
+        var obj = typeof input === 'string' ? JSON.parse(input) : input;
+        REQUIRED.forEach(function(f) {
+          if (!Object.prototype.hasOwnProperty.call(obj, f)) {
+            throw new Error('Missing required field: ' + f);
+          }
+        });
+        return obj;
+      },
+
+      getPresetNames: function() {
+        return Object.keys(this.PRESETS).sort();
+      },
+
+      loadPreset: function(name) {
+        if (!Object.prototype.hasOwnProperty.call(this.PRESETS, name)) {
+          throw new Error('Unknown preset: ' + name);
+        }
+        return this.PRESETS[name];
+      }
+    };
+
+    /* ── Helpers ─────────────────────────────────────────── */
+    function setStatus(msg, type) {
+      var bar = document.getElementById('status_bar');
+      bar.textContent = msg;
+      bar.className = type || '';
+    }
+
+    function getAlgorithm() {
+      return document.getElementById('algorithm_select').value;
+    }
+
+    function getSpeed() {
+      return parseInt(document.getElementById('speed_slider').value, 10);
+    }
+
+    /* ── State (replaced by real Controller/Grid when integrated) */
+    var state = {
+      cols: ScenarioControls.DEFAULT_GRID_SIZE.cols,
+      rows: ScenarioControls.DEFAULT_GRID_SIZE.rows,
+      walls: [],   // array of [x, y]
+      startX: 1, startY: 7,
+      endX: 13,  endY: 7
+    };
+
+    /* ── Populate algorithm dropdown ─────────────────────── */
+    (function populateAlgos() {
+      var sel = document.getElementById('algorithm_select');
+      ScenarioControls.ALGORITHMS.forEach(function(a) {
+        var opt = document.createElement('option');
+        opt.value = a.id;
+        opt.textContent = a.label;
+        sel.appendChild(opt);
+      });
+    }());
+
+    /* ── Populate preset dropdown ────────────────────────── */
+    (function populatePresets() {
+      var sel = document.getElementById('preset_select');
+      ScenarioControls.getPresetNames().forEach(function(name) {
+        var opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        sel.appendChild(opt);
+      });
+    }());
+
+    /* ── Speed slider display ────────────────────────────── */
+    document.getElementById('speed_slider').addEventListener('input', function() {
+      document.getElementById('speed_val').textContent = this.value;
+    });
+
+    /* ── Find Path ───────────────────────────────────────── */
+    document.getElementById('btn_find_path').addEventListener('click', function() {
+      var algo = getAlgorithm();
+      var interval = ScenarioControls.getAnimationInterval(getSpeed());
+      setStatus('Running ' + algo + ' at ' + interval + 'ms/op…');
+      // Integration point: call Controller.start() with chosen algorithm + speed
+      // Controller.operationsPerSecond = Math.round(1000 / interval);
+      // Controller.start();
+    });
+
+    /* ── Clear Grid ──────────────────────────────────────── */
+    document.getElementById('btn_clear').addEventListener('click', function() {
+      state.walls = [];
+      setStatus('Grid cleared.', 'ok');
+      // Integration point: Controller.reset()
+    });
+
+    /* ── Apply Grid Size ─────────────────────────────────── */
+    document.getElementById('btn_apply_size').addEventListener('click', function() {
+      var cols = parseInt(document.getElementById('grid_cols').value, 10);
+      var rows = parseInt(document.getElementById('grid_rows').value, 10);
+      if (!ScenarioControls.validateGridSize(cols, rows)) {
+        setStatus('Invalid size. Cols and rows must be integers in [5, 100].', 'err');
+        return;
+      }
+      state.cols = cols;
+      state.rows = rows;
+      state.walls = [];
+      setStatus('Grid resized to ' + cols + '×' + rows + '.', 'ok');
+      // Integration point: Controller.reset(); re-init with new gridSize
+      // Controller.gridSize = [cols, rows];
+      // Controller.reset();
+    });
+
+    /* ── Load Preset ─────────────────────────────────────── */
+    document.getElementById('btn_load_preset').addEventListener('click', function() {
+      var name = document.getElementById('preset_select').value;
+      if (!name) { setStatus('Select a preset first.', 'err'); return; }
+      try {
+        var preset = ScenarioControls.loadPreset(name);
+        state.cols   = preset.cols;
+        state.rows   = preset.rows;
+        state.walls  = preset.walls.slice();
+        state.startX = preset.startX;
+        state.startY = preset.startY;
+        state.endX   = preset.endX;
+        state.endY   = preset.endY;
+        document.getElementById('grid_cols').value = preset.cols;
+        document.getElementById('grid_rows').value = preset.rows;
+        setStatus('Loaded preset: ' + name, 'ok');
+        // Integration point: apply to Controller + View
+      } catch(e) {
+        setStatus(e.message, 'err');
+      }
+    });
+
+    /* ── Save Scenario ───────────────────────────────────── */
+    document.getElementById('btn_save').addEventListener('click', function() {
+      try {
+        var json = ScenarioControls.serializeScenario({
+          cols:      state.cols,
+          rows:      state.rows,
+          walls:     state.walls,
+          startX:    state.startX,
+          startY:    state.startY,
+          endX:      state.endX,
+          endY:      state.endY,
+          algorithm: getAlgorithm()
+        });
+        var blob = new Blob([json], { type: 'application/json' });
+        var url  = URL.createObjectURL(blob);
+        var a    = document.createElement('a');
+        a.href     = url;
+        a.download = 'scenario.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        setStatus('Scenario saved.', 'ok');
+      } catch(e) {
+        setStatus('Save failed: ' + e.message, 'err');
+      }
+    });
+
+    /* ── Load Scenario ───────────────────────────────────── */
+    document.getElementById('btn_load').addEventListener('click', function() {
+      document.getElementById('load_file_input').click();
+    });
+
+    document.getElementById('load_file_input').addEventListener('change', function() {
+      var file = this.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          var scenario = ScenarioControls.deserializeScenario(e.target.result);
+          if (!ScenarioControls.validateGridSize(scenario.cols, scenario.rows)) {
+            throw new Error('Invalid grid size in file.');
+          }
+          state.cols   = scenario.cols;
+          state.rows   = scenario.rows;
+          state.walls  = scenario.walls;
+          state.startX = scenario.startX;
+          state.startY = scenario.startY;
+          state.endX   = scenario.endX;
+          state.endY   = scenario.endY;
+          document.getElementById('grid_cols').value = scenario.cols;
+          document.getElementById('grid_rows').value = scenario.rows;
+          // Select matching algorithm if present
+          var sel = document.getElementById('algorithm_select');
+          for (var i = 0; i < sel.options.length; i++) {
+            if (sel.options[i].value === scenario.algorithm) {
+              sel.selectedIndex = i;
+              break;
+            }
+          }
+          setStatus('Loaded: ' + file.name, 'ok');
+          // Integration point: apply to Controller + View
+        } catch(err) {
+          setStatus('Load failed: ' + err.message, 'err');
+        }
+      };
+      reader.readAsText(file);
+      this.value = ''; // allow re-loading same file
+    });
+
+  }());
+  </script>
+</body>
+</html>

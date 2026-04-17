@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenario Builder — Canvas</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+      gap: 20px;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: #a0c4ff;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .mode-btn {
+      padding: 8px 18px;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: all 0.15s;
+      background: #16213e;
+      color: #ccc;
+    }
+
+    .mode-btn:hover { opacity: 0.85; }
+
+    .mode-btn.active-wall  { border-color: #555; background: #333; color: #fff; }
+    .mode-btn.active-start { border-color: #4caf50; background: #1b4d1f; color: #a5d6a7; }
+    .mode-btn.active-end   { border-color: #f44336; background: #4d1b1b; color: #ef9a9a; }
+
+    .mode-btn[data-mode="wall"]  { border-color: #444; }
+    .mode-btn[data-mode="start"] { border-color: #388e3c; }
+    .mode-btn[data-mode="end"]   { border-color: #d32f2f; }
+    .mode-btn[data-mode="reset"] { border-color: #555; }
+
+    #grid-container {
+      display: inline-block;
+      border: 2px solid #2d2d5e;
+      border-radius: 4px;
+      background: #0f0f23;
+      padding: 4px;
+      user-select: none;
+    }
+
+    #grid {
+      display: grid;
+      gap: 2px;
+    }
+
+    .cell {
+      width: 36px;
+      height: 36px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.08s, transform 0.06s;
+      background: #1e1e3f;
+    }
+
+    .cell:hover { transform: scale(1.08); }
+
+    .cell.wall  { background: #2a2a2a; }
+    .cell.start { background: #388e3c; box-shadow: 0 0 6px #4caf5080; }
+    .cell.end   { background: #d32f2f; box-shadow: 0 0 6px #f4433680; }
+
+    .info {
+      font-size: 0.78rem;
+      color: #666;
+      text-align: center;
+    }
+
+    #state-output {
+      background: #0f0f23;
+      border: 1px solid #2d2d5e;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: #7ec8e3;
+      max-width: 600px;
+      width: 100%;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Scenario Builder — Grid Canvas</h1>
+
+<div class="controls">
+  <button class="mode-btn active-wall" data-mode="wall">Wall</button>
+  <button class="mode-btn" data-mode="start">Start</button>
+  <button class="mode-btn" data-mode="end">End</button>
+  <button class="mode-btn" data-mode="reset">Reset</button>
+</div>
+
+<div id="grid-container">
+  <div id="grid"></div>
+</div>
+
+<div class="info">Click cells to place walls / start / end. Drag to paint walls.</div>
+
+<div id="state-output">Grid state will appear here…</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // --- GridCanvas model (inline for standalone HTML) ---
+  function GridCanvas(width, height) {
+    this.width  = width  || 15;
+    this.height = height || 15;
+    this._walls = {};
+    this._start = null;
+    this._end   = null;
+    this._onChange = null;
+  }
+
+  GridCanvas.prototype._key = function(x, y) { return x + ',' + y; };
+  GridCanvas.prototype._inBounds = function(x, y) {
+    return x >= 0 && x < this.width && y >= 0 && y < this.height;
+  };
+  GridCanvas.prototype.onChange = function(fn) { this._onChange = fn; };
+  GridCanvas.prototype._notify = function() {
+    if (typeof this._onChange === 'function') this._onChange(this.getState());
+  };
+
+  GridCanvas.prototype.getCellType = function(x, y) {
+    if (this._start && this._start.x === x && this._start.y === y) return 'start';
+    if (this._end   && this._end.x   === x && this._end.y   === y) return 'end';
+    if (this._walls[this._key(x, y)]) return 'wall';
+    return 'empty';
+  };
+
+  GridCanvas.prototype.toggleWall = function(x, y) {
+    if (!this._inBounds(x, y)) return;
+    var type = this.getCellType(x, y);
+    if (type === 'start' || type === 'end') return;
+    var k = this._key(x, y);
+    if (this._walls[k]) { delete this._walls[k]; } else { this._walls[k] = true; }
+    this._notify();
+  };
+
+  GridCanvas.prototype.setWall = function(x, y) {
+    if (!this._inBounds(x, y)) return;
+    var type = this.getCellType(x, y);
+    if (type === 'start' || type === 'end') return;
+    this._walls[this._key(x, y)] = true;
+    this._notify();
+  };
+
+  GridCanvas.prototype.setStart = function(x, y) {
+    if (!this._inBounds(x, y)) return;
+    this._start = null;
+    if (this._end && this._end.x === x && this._end.y === y) this._end = null;
+    delete this._walls[this._key(x, y)];
+    this._start = { x: x, y: y };
+    this._notify();
+  };
+
+  GridCanvas.prototype.setEnd = function(x, y) {
+    if (!this._inBounds(x, y)) return;
+    this._end = null;
+    if (this._start && this._start.x === x && this._start.y === y) this._start = null;
+    delete this._walls[this._key(x, y)];
+    this._end = { x: x, y: y };
+    this._notify();
+  };
+
+  GridCanvas.prototype.getStart = function() {
+    return this._start ? { x: this._start.x, y: this._start.y } : null;
+  };
+
+  GridCanvas.prototype.getEnd = function() {
+    return this._end ? { x: this._end.x, y: this._end.y } : null;
+  };
+
+  GridCanvas.prototype.getState = function() {
+    var walls = [];
+    var keys = Object.keys(this._walls);
+    for (var i = 0; i < keys.length; i++) {
+      var parts = keys[i].split(',');
+      walls.push({ x: parseInt(parts[0], 10), y: parseInt(parts[1], 10) });
+    }
+    return {
+      width:  this.width,
+      height: this.height,
+      start:  this._start ? { x: this._start.x, y: this._start.y } : null,
+      end:    this._end   ? { x: this._end.x,   y: this._end.y   } : null,
+      walls:  walls
+    };
+  };
+
+  GridCanvas.prototype.toMatrix = function() {
+    var matrix = [];
+    for (var y = 0; y < this.height; y++) {
+      matrix[y] = [];
+      for (var x = 0; x < this.width; x++) {
+        matrix[y][x] = this._walls[this._key(x, y)] ? 1 : 0;
+      }
+    }
+    return matrix;
+  };
+
+  GridCanvas.prototype.setState = function(snapshot) {
+    this._walls = {};
+    this._start = null;
+    this._end   = null;
+    if (snapshot.start) this.setStart(snapshot.start.x, snapshot.start.y);
+    if (snapshot.end)   this.setEnd(snapshot.end.x, snapshot.end.y);
+    var walls = snapshot.walls || [];
+    for (var i = 0; i < walls.length; i++) {
+      var w = walls[i];
+      if (this._inBounds(w.x, w.y) && this.getCellType(w.x, w.y) === 'empty') {
+        this._walls[this._key(w.x, w.y)] = true;
+      }
+    }
+    this._notify();
+  };
+
+  GridCanvas.prototype.reset = function() {
+    this._walls = {};
+    this._start = null;
+    this._end   = null;
+    this._notify();
+  };
+
+  // --- UI ---
+  var gc = new GridCanvas(15, 15);
+  var currentMode = 'wall';
+  var isPainting = false;
+
+  var gridEl = document.getElementById('grid');
+  var stateEl = document.getElementById('state-output');
+
+  // Build grid DOM
+  gridEl.style.gridTemplateColumns = 'repeat(' + gc.width + ', 36px)';
+  gridEl.style.gridTemplateRows    = 'repeat(' + gc.height + ', 36px)';
+
+  function cellId(x, y) { return 'c-' + x + '-' + y; }
+
+  for (var y = 0; y < gc.height; y++) {
+    for (var x = 0; x < gc.width; x++) {
+      var cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.id = cellId(x, y);
+      cell.dataset.x = x;
+      cell.dataset.y = y;
+      gridEl.appendChild(cell);
+    }
+  }
+
+  function renderCell(x, y) {
+    var el = document.getElementById(cellId(x, y));
+    if (!el) return;
+    var t = gc.getCellType(x, y);
+    el.className = 'cell' + (t !== 'empty' ? ' ' + t : '');
+  }
+
+  function renderAll() {
+    for (var y = 0; y < gc.height; y++) {
+      for (var x = 0; x < gc.width; x++) {
+        renderCell(x, y);
+      }
+    }
+  }
+
+  // Wire onChange: re-render full grid + update state output on any model change
+  gc.onChange(function(state) {
+    renderAll();
+    stateEl.textContent = JSON.stringify(state, null, 2);
+  });
+
+  function handleCell(x, y) {
+    if (currentMode === 'wall') {
+      gc.toggleWall(x, y);
+    } else if (currentMode === 'start') {
+      gc.setStart(x, y);
+    } else if (currentMode === 'end') {
+      gc.setEnd(x, y);
+    }
+  }
+
+  function paintCell(x, y) {
+    if (currentMode !== 'wall') return;
+    gc.setWall(x, y);
+  }
+
+  gridEl.addEventListener('mousedown', function(e) {
+    var el = e.target.closest('.cell');
+    if (!el) return;
+    isPainting = true;
+    handleCell(parseInt(el.dataset.x, 10), parseInt(el.dataset.y, 10));
+    e.preventDefault();
+  });
+
+  gridEl.addEventListener('mouseover', function(e) {
+    if (!isPainting) return;
+    var el = e.target.closest('.cell');
+    if (!el) return;
+    paintCell(parseInt(el.dataset.x, 10), parseInt(el.dataset.y, 10));
+  });
+
+  document.addEventListener('mouseup', function() { isPainting = false; });
+
+  // Mode buttons
+  document.querySelectorAll('.mode-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var mode = btn.dataset.mode;
+      if (mode === 'reset') {
+        gc.reset(); // onChange fires renderAll + state output
+        return;
+      }
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(function(b) {
+        b.className = 'mode-btn';
+      });
+      btn.className = 'mode-btn active-' + mode;
+    });
+  });
+
+  // Expose API for other components
+  window.GridCanvas = GridCanvas;
+  window.gridCanvas = gc;
+
+  // Initial render
+  renderAll();
+  stateEl.textContent = JSON.stringify(gc.getState(), null, 2);
+})();
+</script>
+</body>
+</html>

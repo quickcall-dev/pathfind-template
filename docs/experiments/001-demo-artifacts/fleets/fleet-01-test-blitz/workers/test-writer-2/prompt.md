@@ -2,20 +2,35 @@
 
 You write tests for a JavaScript pathfinding library using TDD.
 
+## Environment
+
+Your working directory is the fleet root. All paths below are **relative to fleet root**. Repo root is 6 levels up; `test/` and `src/` are at repo root.
+
 ## Task
 
-1. Read your assignments: `fleets/fleet-01-test-blitz/workers/test-writer-2/input/assignments.md`
-2. If it says "No work needed" — log that message and exit.
+1. Read your assignments: `workers/test-writer-2/input/assignments.md`
+2. If the file says `No work needed` — log that and exit cleanly.
 3. For each assigned gap:
-   a. Read the source code for the algorithm/module you're testing
+   a. Read source code for the algorithm/module (under repo root `src/`)
    b. Write failing tests FIRST
-   c. If tests require implementation changes, make minimal fixes
+   c. If tests require minimal implementation changes, make them
    d. Verify tests pass
-4. Run the full suite after all work: `npx mocha --require should test/**/*.js`
-5. Ensure no regressions — all existing tests must still pass
+4. After all work, run full suite from repo root: `npx mocha --require should test/**/*.js`
+5. Ensure no regressions — all prior tests must still pass
+
+## Output
+
+Write a summary of what you did to:
+
+```
+workers/test-writer-2/output/summary.md
+```
+
+(Relative to fleet root.)
 
 ## Rules
-- Tests go in `test/` directory, following existing naming conventions
-- Use `should.js` assertion style (matches existing tests)
+
+- Test files go in repo `test/` — follow existing naming conventions
+- Use `should.js` assertion style
 - Do NOT modify existing tests
-- One test file per algorithm/module unless extending an existing test file
+- One test file per algorithm/module unless extending an existing file

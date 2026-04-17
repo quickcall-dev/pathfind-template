@@ -177,6 +177,25 @@ $.extend(Controller, {
             operationCount: this.operationCount,
         });
         View.drawPath(this.path);
+
+        // Capture metrics and show score card
+        this._lastRun = Scorer.capture(
+            Panel.getFinderName(),
+            this.grid,
+            this.path,
+            this.timeSpent,
+            this.operationCount
+        );
+        Scorer.showScoreCard(this._lastRun);
+
+        // Wire save/compare buttons
+        $('#save_run').off('click').on('click', function() {
+            Scorer.save(Controller._lastRun);
+            $('#save_run').text('Saved!').prop('disabled', true);
+        });
+        $('#compare_runs').off('click').on('click', function() {
+            Scorer.showComparisonDrawer();
+        });
         // => finished
     },
     onclear: function(event, from, to) {
@@ -227,6 +246,9 @@ $.extend(Controller, {
             id: 2,
             enabled: true,
         });
+        // Reset save button for new run
+        $('#save_run').text('Save Run').prop('disabled', false);
+        $('#score_panel').hide();
         this.search();
         // => searching
     },
