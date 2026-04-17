@@ -15,6 +15,8 @@ graph LR
 
 4 fleet definitions in `docs/experiments/002-live-demo/fleets/`, all ready to launch as-is. No outputs, no logs, no artifacts — audience generates everything live.
 
+**Run fleets ONE AT A TIME, not in parallel.** fleet-01 and fleet-02 modify overlapping files (`src/`, `test/`, `visual/`); running them concurrently causes merge conflicts and wasted work. fleet-04 (autoresearch) actively rewrites `src/finders/DijkstraFinder.js` — it MUST have exclusive access to the repo. Finish or kill one fleet before launching the next.
+
 | Fleet | Type | Workers | Launch command |
 |-------|------|---------|----------------|
 | `fleet-01-test-blitz` | dag | 9 | `/dag-fleet launch docs/experiments/002-live-demo/fleets/fleet-01-test-blitz` |
@@ -54,7 +56,8 @@ For the audience:
 6. `./dev.sh` to start the dev tmux.
 7. In a separate terminal: `claude`, then launch a fleet from the table above.
 8. Monitor with `/<fleet-type> status` or `/<fleet-type> view`.
+9. **Wait for it to finish (or kill it) before starting the next fleet.** No concurrent fleets.
 
-Recommended order for first-time users: fleet-03 → fleet-01 → fleet-02 → fleet-04.
+Recommended order for first-time users: fleet-03 → fleet-01 → fleet-02 → fleet-04. One at a time.
 
 Reference (what a full run looks like): checkout `completed-demo` branch.
