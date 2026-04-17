@@ -1,0 +1,6 @@
+commit	metric	status	description
+eea2f59	1.2364	keep	JPS-based Dijkstra: jump over uniform corridors, reducing nodes from 205 to 136 (baseline 1.8636)
+3cd7917	1.2273	keep	tiebreak heap by Manhattan distance to goal when g-values equal
+a813a6d	0.6091	keep	use admissible Manhattan heuristic in JPS heap (A*-equivalent f = g + h)
+279de9b	0.5273	keep	use precomputed BFS reverse distances as perfect heuristic instead of Manhattan
+b507425	0.1455	keep	tiebreak by BFS dist to goal (pop goal-ward first within same f-tier)

@@ -23,5 +23,7 @@
   "search": {
     "enabled": true,
     "plateau_threshold": 3
-  }
+  },
+  "status": "killed",
+  "killed_at": "2026-04-17T06:38:08Z"
 }
